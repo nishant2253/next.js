@@ -2,7 +2,6 @@ import type {
   CacheNodeSeedData,
   FlightData,
   FlightDataPath,
-  FlightDataSegment,
   FlightRouterState,
   FlightSegmentPath,
   Segment,
@@ -60,29 +59,14 @@ export function getNextFlightSegmentPath(
   return flightSegmentPath.slice(2)
 }
 
-function isFlightDataPathArray(data: any): data is FlightDataPath[] {
-  return (
-    Array.isArray(data) &&
-    data.every((item) => Array.isArray(item) && item.length > 0)
-  )
-}
-
 export function normalizeFlightData(
   flightData: FlightData
-): NormalizedFlightResponse[] | string
-export function normalizeFlightData(
-  flightData: FlightDataSegment
-): NormalizedFlightResponse
-export function normalizeFlightData(
-  flightData: FlightData | FlightDataSegment
-): NormalizedFlightResponse[] | NormalizedFlightResponse | string {
+): NormalizedFlightResponse[] | string {
+  // FlightData can be a string when the server didn't respond with a proper flight response,
+  // or when a redirect happens, to signal to the client that it needs to perform an MPA navigation.
   if (typeof flightData === 'string') {
     return flightData
   }
 
-  // If FlightData is an array, it means we have multiple paths to normalize.
-  // Otherwise we only need to normalize a single path.
-  return isFlightDataPathArray(flightData)
-    ? flightData.map(getFlightDataPartsFromPath)
-    : getFlightDataPartsFromPath(flightData)
+  return flightData.map(getFlightDataPartsFromPath)
 }
