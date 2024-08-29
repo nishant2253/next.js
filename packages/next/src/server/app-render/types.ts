@@ -15,6 +15,7 @@ import type { InstrumentationOnRequestError } from '../instrumentation/types'
 import type { NextRequestHint } from '../web/adapter'
 import type { BaseNextRequest } from '../base-http'
 import type { IncomingMessage } from 'http'
+import type { NormalizedFlightResponse } from '../../client/flight-data-helpers'
 
 export type DynamicParamTypes =
   | 'catchall'
@@ -239,11 +240,11 @@ export type ActionFlightResponse = {
   /** buildId */
   b: string
   /** flightData */
-  f: FlightData | null
+  f: FlightData
 }
 
 export type FetchServerResponseResult = {
-  flightData: FlightData
+  flightData: NormalizedFlightResponse[] | string
   canonicalUrl: URL | undefined
   couldBeIntercepted: boolean
   isPrerender: boolean

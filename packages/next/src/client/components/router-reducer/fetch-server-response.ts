@@ -30,6 +30,7 @@ import {
 import { callServer } from '../../app-call-server'
 import { PrefetchKind } from './router-reducer-types'
 import { hexHash } from '../../../shared/lib/hash'
+import { normalizeFlightData } from '../../flight-data-helpers'
 
 export interface FetchServerResponseOptions {
   readonly flightRouterState: FlightRouterState
@@ -209,7 +210,7 @@ export async function fetchServerResponse(
     }
 
     return {
-      flightData: response.f,
+      flightData: normalizeFlightData(response.f),
       canonicalUrl: canonicalUrl,
       couldBeIntercepted: interception,
       isPrerender: isPrerender,

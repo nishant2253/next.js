@@ -352,7 +352,7 @@ async function generateDynamicRSCPayload(
 ): Promise<RSCPayload> {
   // Flight data that is going to be passed to the browser.
   // Currently a single item array but in the future multiple patches might be combined in a single request.
-  let flightData: FlightData | null = null
+  let flightData: FlightData = ''
 
   const {
     componentMod: { tree: loaderTree, createDynamicallyTrackedSearchParams },
@@ -415,12 +415,7 @@ async function generateDynamicRSCPayload(
   // Otherwise, it's a regular RSC response.
   return {
     b: ctx.renderOpts.buildId,
-    // Anything besides an action response should have non-null flightData.
-    // We don't ever expect this to be null because `skipFlight` is only
-    // used when invoked by a server action, which is covered above.
-    // The client router can handle an empty string (treating it as an MPA navigation),
-    // so we'll use that as a fallback.
-    f: flightData ?? '',
+    f: flightData,
   }
 }
 
@@ -650,7 +645,8 @@ async function getErrorRSCPayload(
     i: false,
     f: [[initialTree, initialSeedData, initialHead]],
     G: GlobalError,
-  } satisfies RSCPayload
+    s: typeof ctx.renderOpts.postponed === 'string',
+  } satisfies InitialRSCPayload
 }
 
 // This component must run in an SSR context. It will render the RSC root component
